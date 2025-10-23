@@ -19,18 +19,19 @@ export function Header({ businessName, logoText, logoUrl, onQuoteClick }: Header
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        console.log("Clicked outside, closing menu"); // Debug log
         setIsMobileMenuOpen(false);
       }
     };
 
     if (isMobileMenuOpen) {
       document.addEventListener("mousedown", handleClickOutside);
-      document.addEventListener("touchstart", handleClickOutside);
+      document.addEventListener("touchend", handleClickOutside);
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("touchstart", handleClickOutside);
+      document.removeEventListener("touchend", handleClickOutside);
     };
   }, [isMobileMenuOpen]);
 
@@ -50,7 +51,9 @@ export function Header({ businessName, logoText, logoUrl, onQuoteClick }: Header
     }
   };
 
-  const toggleMenu = () => {
+  const toggleMenu = (event: React.MouseEvent | React.TouchEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
     console.log("Toggling menu, current state:", isMobileMenuOpen); // Debug log
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
@@ -178,7 +181,6 @@ export function Header({ businessName, logoText, logoUrl, onQuoteClick }: Header
             size="icon"
             className="lg:hidden h-12 w-12"
             onClick={toggleMenu}
-            onTouchStart={toggleMenu}
             aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             data-testid="button-mobile-menu"
           >
