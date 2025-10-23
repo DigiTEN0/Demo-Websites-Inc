@@ -256,6 +256,10 @@
   .max-w-7xl.mx-auto.px-4.md\:px-6.lg\:px-8.py-12.md\:py-16 {
     background: white !important;
   }
+
+  footer.bg-card.border-t.border-card-border {
+      background: white !important;
+  }
   
   h2.text-3xl.md\:text-4xl.lg\:text-5xl.font-bold.font-poppins.text-foreground {
     font-size: 26px !important;
