@@ -177,9 +177,9 @@ export function Header({ businessName, logoText, logoUrl, onQuoteClick }: Header
           <Button
             variant="ghost"
             size="icon"
-            className="lg:hidden h-12 w-12" // Increased size for touch accessibility
+            className="lg:hidden h-12 w-12"
             onClick={toggleMenu}
-            onTouchStart={toggleMenu} // Explicit touch support
+            onTouchStart={toggleMenu}
             aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             data-testid="button-mobile-menu"
           >
@@ -189,100 +189,100 @@ export function Header({ businessName, logoText, logoUrl, onQuoteClick }: Header
       </div>
 
       {/* Mobile Menu Overlay */}
-      <div
-        ref={menuRef}
-        className={`lg:hidden fixed inset-0 top-16 bg-background z-40 border-t border-border overflow-y-auto transition-opacity duration-300 ${
-          isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
-      >
-        <nav className="flex flex-col p-6 gap-4">
-          <a
-            href={getDemoPath("/", demoSlug)}
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="text-lg font-medium text-foreground py-3 text-left hover-elevate rounded-md px-4"
-            data-testid="link-home-mobile"
-          >
-            Home
-          </a>
-          <div className="border-l-2 border-border pl-4 space-y-2">
-            <p className="text-sm font-semibold text-muted-foreground mb-2">Diensten</p>
+      {isMobileMenuOpen && (
+        <div
+          ref={menuRef}
+          className="lg:hidden fixed inset-0 top-[64px] md:top-[80px] bg-background z-40 border-t border-border overflow-y-auto"
+        >
+          <nav className="flex flex-col p-6 gap-4">
             <a
-              href={getDemoPath("/diensten/dakbedekking", demoSlug)}
+              href={getDemoPath("/", demoSlug)}
               onClick={() => setIsMobileMenuOpen(false)}
-              className="block text-base py-2 hover-elevate rounded-md px-3"
+              className="text-lg font-medium text-foreground py-3 text-left hover-elevate rounded-md px-4"
+              data-testid="link-home-mobile"
             >
-              Dakbedekking
+              Home
             </a>
-            <a
-              href={getDemoPath("/diensten/plat-dak", demoSlug)}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="block text-base py-2 hover-elevate rounded-md px-3"
+            <div className="border-l-2 border-border pl-4 space-y-2">
+              <p className="text-sm font-semibold text-muted-foreground mb-2">Diensten</p>
+              <a
+                href={getDemoPath("/diensten/dakbedekking", demoSlug)}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block text-base py-2 hover-elevate rounded-md px-3"
+              >
+                Dakbedekking
+              </a>
+              <a
+                href={getDemoPath("/diensten/plat-dak", demoSlug)}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block text-base py-2 hover-elevate rounded-md px-3"
+              >
+                Plat Dak
+              </a>
+              <a
+                href={getDemoPath("/diensten/dakreparatie", demoSlug)}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block text-base py-2 hover-elevate rounded-md px-3"
+              >
+                Dakreparatie
+              </a>
+              <a
+                href={getDemoPath("/diensten/dakisolatie", demoSlug)}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block text-base py-2 hover-elevate rounded-md px-3"
+              >
+                Dakisolatie
+              </a>
+              <a
+                href={getDemoPath("/diensten/dakgoten", demoSlug)}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block text-base py-2 hover-elevate rounded-md px-3"
+              >
+                Dakgoten
+              </a>
+              <a
+                href={getDemoPath("/diensten/dakonderhoud", demoSlug)}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block text-base py-2 hover-elevate rounded-md px-3"
+              >
+                Dakonderhoud
+              </a>
+            </div>
+            <button
+              onClick={() => scrollToSection("reviews")}
+              className="text-lg font-medium text-foreground py-3 text-left hover-elevate rounded-md px-4"
+              data-testid="link-reviews-mobile"
             >
-              Plat Dak
-            </a>
-            <a
-              href={getDemoPath("/diensten/dakreparatie", demoSlug)}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="block text-base py-2 hover-elevate rounded-md px-3"
+              Reviews
+            </button>
+            <button
+              onClick={() => scrollToSection("faq")}
+              className="text-lg font-medium text-foreground py-3 text-left hover-elevate rounded-md px-4"
+              data-testid="link-faq-mobile"
             >
-              Dakreparatie
-            </a>
-            <a
-              href={getDemoPath("/diensten/dakisolatie", demoSlug)}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="block text-base py-2 hover-elevate rounded-md px-3"
+              FAQ
+            </button>
+            <button
+              onClick={() => scrollToSection("contact")}
+              className="text-lg font-medium text-foreground py-3 text-left hover-elevate rounded-md px-4"
+              data-testid="link-contact-mobile"
             >
-              Dakisolatie
-            </a>
-            <a
-              href={getDemoPath("/diensten/dakgoten", demoSlug)}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="block text-base py-2 hover-elevate rounded-md px-3"
+              Contact
+            </button>
+            <Button
+              onClick={() => {
+                onQuoteClick();
+                setIsMobileMenuOpen(false);
+              }}
+              variant="default"
+              className="w-full font-poppins font-semibold mt-4"
+              data-testid="button-offerte-mobile"
             >
-              Dakgoten
-            </a>
-            <a
-              href={getDemoPath("/diensten/dakonderhoud", demoSlug)}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="block text-base py-2 hover-elevate rounded-md px-3"
-            >
-              Dakonderhoud
-            </a>
-          </div>
-          <button
-            onClick={() => scrollToSection("reviews")}
-            className="text-lg font-medium text-foreground py-3 text-left hover-elevate rounded-md px-4"
-            data-testid="link-reviews-mobile"
-          >
-            Reviews
-          </button>
-          <button
-            onClick={() => scrollToSection("faq")}
-            className="text-lg font-medium text-foreground py-3 text-left hover-elevate rounded-md px-4"
-            data-testid="link-faq-mobile"
-          >
-            FAQ
-          </button>
-          <button
-            onClick={() => scrollToSection("contact")}
-            className="text-lg font-medium text-foreground py-3 text-left hover-elevate rounded-md px-4"
-            data-testid="link-contact-mobile"
-          >
-            Contact
-          </button>
-          <Button
-            onClick={() => {
-              onQuoteClick();
-              setIsMobileMenuOpen(false);
-            }}
-            variant="default"
-            className="w-full font-poppins font-semibold mt-4"
-            data-testid="button-offerte-mobile"
-          >
-            Offerte Aanvragen
-          </Button>
-        </nav>
-      </div>
+              Offerte Aanvragen
+            </Button>
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
