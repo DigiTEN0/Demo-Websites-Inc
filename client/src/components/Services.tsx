@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Home, Wrench, Shield, Snowflake, Wind, Droplets, ArrowRight } from "lucide-react";
 import { Link } from "wouter";
+import { useDemoContext, getDemoPath } from "@/contexts/DemoContext";
 import pitchedRoofImage from "@assets/generated_images/Pitched_roof_service_image_cfe08b30.png";
 import flatRoofImage from "@assets/generated_images/Flat_roof_service_image_07e55321.png";
 import repairImage from "@assets/generated_images/Roof_repair_service_image_4e9c21d0.png";
@@ -52,6 +53,8 @@ const services = [
 ];
 
 export function Services() {
+  const { demoSlug } = useDemoContext();
+
   return (
     <section id="diensten" className="py-16 md:py-24 lg:py-32 bg-background">
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
@@ -93,7 +96,7 @@ export function Services() {
               </CardHeader>
 
               <CardContent className="p-4 md:p-5 pt-0">
-                <Link href={`/diensten/${service.id}`}>
+                <Link href={getDemoPath(`/diensten/${service.id}`, demoSlug)}>
                   <Button 
                     variant="default" 
                     className="w-full group-hover:shadow-md transition-shadow"
