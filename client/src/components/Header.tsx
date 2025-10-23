@@ -30,13 +30,15 @@ export function Header({ businessName, logoText, logoUrl, onQuoteClick }: Header
   // Scroll to top on route change
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [location.pathname]); // Trigger on route change
+  }, [location.pathname]);
 
-  const scrollToSection = (sectionId: string, path?: string) => {
+  const scrollToSection = (sectionId: string) => {
     setIsMobileMenuOpen(false); // Close menu first
-    if (path && path !== location.pathname) {
-      // Navigate to the path and scroll to section after navigation
-      navigate(path);
+    const homePath = getDemoPath("/", demoSlug);
+    if (location.pathname !== homePath) {
+      // Navigate to homepage and scroll to section
+      console.log(`Navigating to homepage: ${homePath} to scroll to ${sectionId}`); // Debug log
+      navigate(homePath);
       setTimeout(() => {
         const element = document.getElementById(sectionId);
         console.log(`Scrolling to section: ${sectionId}, element found:`, element); // Debug log
@@ -46,7 +48,7 @@ export function Header({ businessName, logoText, logoUrl, onQuoteClick }: Header
           console.log(`Section ${sectionId} not found, scrolling to top`);
           window.scrollTo({ top: 0, behavior: "smooth" });
         }
-      }, 100); // Delay to allow navigation to complete
+      }, 200); // Increased delay to ensure page renders
     } else {
       // Same-page scrolling
       const element = document.getElementById(sectionId);
@@ -78,7 +80,10 @@ export function Header({ businessName, logoText, logoUrl, onQuoteClick }: Header
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <button
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            onClick={() => {
+              navigate(getDemoPath("/", demoSlug));
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
             className="hover-elevate rounded-md px-3 py-2 flex items-center min-h-[48px]"
             data-testid="button-logo"
           >
