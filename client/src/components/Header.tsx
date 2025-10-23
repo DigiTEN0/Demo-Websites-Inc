@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useDemoContext, getDemoPath } from "@/DemoContext";
+import { Link, useLocation } from "wouter";
 
 interface HeaderProps {
   businessName: string;
@@ -13,57 +14,62 @@ interface HeaderProps {
 export function Header({ businessName, logoText, logoUrl, onQuoteClick }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { demoSlug } = useDemoContext();
+  const [, navigate] = useLocation();
   const menuRef = useRef<HTMLDivElement>(null);
-  const isToggling = useRef(false); // Debounce flag
+  const isToggling = useRef(false);
 
   // Prevent body scrolling when menu is open
   useEffect(() => {
+    console.log("Setting overflow:", isMobileMenuOpen ? "hidden" : "auto"); // Debug log
     document.body.style.overflow = isMobileMenuOpen ? "hidden" : "auto";
     return () => {
       document.body.style.overflow = "auto";
     };
   }, [isMobileMenuOpen]);
 
-  // Temporarily disabled click-outside handler to isolate issue
-  /*
+  // Scroll to top on route change
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        console.log("Clicked outside, closing menu");
-        setIsMobileMenuOpen(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [location.pathname]); // Trigger on route change
+
+  const scrollToSection = (sectionId: string, path?: string) => {
+    setIsMobileMenuOpen(false); // Close menu first
+    if (path && path !== location.pathname) {
+      // Navigate to the path and scroll to section after navigation
+      navigate(path);
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        console.log(`Scrolling to section: ${sectionId}, element found:`, element); // Debug log
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        } else {
+          console.log(`Section ${sectionId} not found, scrolling to top`);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      }, 100); // Delay to allow navigation to complete
+    } else {
+      // Same-page scrolling
+      const element = document.getElementById(sectionId);
+      console.log(`Scrolling to section: ${sectionId}, element found:`, element); // Debug log
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      } else {
+        console.log(`Section ${sectionId} not found, scrolling to top`);
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
-    };
-
-    if (isMobileMenuOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-      document.addEventListener("touchend", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("touchend", handleClickOutside);
-    };
-  }, [isMobileMenuOpen]);
-  */
-
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-      setIsMobileMenuOpen(false);
     }
   };
 
   const toggleMenu = (event: React.MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
-    if (isToggling.current) return; // Prevent rapid toggling
+    if (isToggling.current) return;
     isToggling.current = true;
-    console.log("Toggling menu, current state:", isMobileMenuOpen, "new state:", !isMobileMenuOpen);
+    console.log("Toggling menu, current state:", isMobileMenuOpen, "new state:", !isMobileMenuOpen); // Debug log
     setIsMobileMenuOpen(!isMobileMenuOpen);
     setTimeout(() => {
       isToggling.current = false;
-    }, 100); // Debounce for 100ms
+    }, 100);
   };
 
   return (
@@ -96,13 +102,13 @@ export function Header({ businessName, logoText, logoUrl, onQuoteClick }: Header
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-6">
-            <a
+            <Link
               href={getDemoPath("/", demoSlug)}
               className="text-base font-medium text-foreground/80 hover:text-foreground transition-colors"
               data-testid="link-home"
             >
               Home
-            </a>
+            </Link>
             <div className="relative group">
               <button
                 onClick={() => scrollToSection("diensten")}
@@ -113,42 +119,42 @@ export function Header({ businessName, logoText, logoUrl, onQuoteClick }: Header
               </button>
               <div className="absolute left-0 top-full mt-2 w-56 bg-card border border-card-border rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                 <div className="py-2">
-                  <a
+                  <Link
                     href={getDemoPath("/diensten/dakbedekking", demoSlug)}
                     className="block px-4 py-2 text-sm hover-elevate text-card-foreground"
                   >
                     Dakbedekking
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     href={getDemoPath("/diensten/plat-dak", demoSlug)}
                     className="block px-4 py-2 text-sm hover-elevate text-card-foreground"
                   >
                     Plat Dak
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     href={getDemoPath("/diensten/dakreparatie", demoSlug)}
                     className="block px-4 py-2 text-sm hover-elevate text-card-foreground"
                   >
                     Dakreparatie
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     href={getDemoPath("/diensten/dakisolatie", demoSlug)}
                     className="block px-4 py-2 text-sm hover-elevate text-card-foreground"
                   >
                     Dakisolatie
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     href={getDemoPath("/diensten/dakgoten", demoSlug)}
                     className="block px-4 py-2 text-sm hover-elevate text-card-foreground"
                   >
                     Dakgoten
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     href={getDemoPath("/diensten/dakonderhoud", demoSlug)}
                     className="block px-4 py-2 text-sm hover-elevate text-card-foreground"
                   >
                     Dakonderhoud
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -205,58 +211,58 @@ export function Header({ businessName, logoText, logoUrl, onQuoteClick }: Header
           onClick={() => console.log("Mobile menu rendered")} // Debug log
         >
           <nav className="flex flex-col p-6 gap-4">
-            <a
+            <Link
               href={getDemoPath("/", demoSlug)}
               onClick={() => setIsMobileMenuOpen(false)}
               className="text-lg font-medium text-foreground py-3 text-left rounded-md px-4"
               data-testid="link-home-mobile"
             >
               Home
-            </a>
+            </Link>
             <div className="border-l-2 border-border pl-4 space-y-2">
               <p className="text-sm font-semibold text-muted-foreground mb-2">Diensten</p>
-              <a
+              <Link
                 href={getDemoPath("/diensten/dakbedekking", demoSlug)}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="block text-base py-2 rounded-md px-3"
               >
                 Dakbedekking
-              </a>
-              <a
+              </Link>
+              <Link
                 href={getDemoPath("/diensten/plat-dak", demoSlug)}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="block text-base py-2 rounded-md px-3"
               >
                 Plat Dak
-              </a>
-              <a
+              </Link>
+              <Link
                 href={getDemoPath("/diensten/dakreparatie", demoSlug)}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="block text-base py-2 rounded-md px-3"
               >
                 Dakreparatie
-              </a>
-              <a
+              </Link>
+              <Link
                 href={getDemoPath("/diensten/dakisolatie", demoSlug)}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="block text-base py-2 rounded-md px-3"
               >
                 Dakisolatie
-              </a>
-              <a
+              </Link>
+              <Link
                 href={getDemoPath("/diensten/dakgoten", demoSlug)}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="block text-base py-2 rounded-md px-3"
               >
                 Dakgoten
-              </a>
-              <a
+              </Link>
+              <Link
                 href={getDemoPath("/diensten/dakonderhoud", demoSlug)}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="block text-base py-2 rounded-md px-3"
               >
                 Dakonderhoud
-              </a>
+              </Link>
             </div>
             <button
               onClick={() => scrollToSection("reviews")}
