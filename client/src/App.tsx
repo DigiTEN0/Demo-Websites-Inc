@@ -91,6 +91,14 @@ function Router() {
         {() => <DemoForm />}
       </Route>
       <Route path="/diensten/:id" component={ServiceDetail} />
+      <Route path="/:slug/diensten/:id">
+        {(params) => (
+          <>
+            <DemoColorLoader slug={params.slug} />
+            <ServiceDetail />
+          </>
+        )}
+      </Route>
       <Route path="/:slug">
         {(params) => (
           <>
