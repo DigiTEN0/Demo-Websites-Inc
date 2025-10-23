@@ -1,5 +1,8 @@
+import { useEffect } from "react";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { SiFacebook, SiInstagram, SiLinkedin } from "react-icons/si";
+import { useDemoContext, getDemoPath } from "@/DemoContext";
+import { Link, useLocation } from "wouter";
 
 interface FooterProps {
   businessName: string;
@@ -10,6 +13,43 @@ interface FooterProps {
 }
 
 export function Footer({ businessName, logoText, logoUrl, email, phoneNumber }: FooterProps) {
+  const { demoSlug } = useDemoContext();
+  const [, navigate] = useLocation();
+
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [location.pathname]);
+
+  const scrollToSection = (sectionId: string) => {
+    const homePath = getDemoPath("/", demoSlug);
+    if (location.pathname !== homePath) {
+      // Navigate to homepage and scroll to section
+      console.log(`Navigating to homepage: ${homePath} to scroll to ${sectionId}`); // Debug log
+      navigate(homePath);
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        console.log(`Scrolling to section: ${sectionId}, element found:`, element); // Debug log
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        } else {
+          console.log(`Section ${sectionId} not found, scrolling to top`);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      }, 200); // Delay to ensure page renders
+    } else {
+      // Same-page scrolling
+      const element = document.getElementById(sectionId);
+      console.log(`Scrolling to section: ${sectionId}, element found:`, element); // Debug log
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      } else {
+        console.log(`Section ${sectionId} not found, scrolling to top`);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }
+  };
+
   return (
     <footer className="bg-card border-t border-card-border">
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-12 md:py-16">
@@ -35,21 +75,21 @@ export function Footer({ businessName, logoText, logoUrl, email, phoneNumber }: 
             </p>
             <div className="flex gap-4">
               <a 
-                href="#" 
+                href={getDemoPath("/facebook", demoSlug)} // Placeholder, replace with actual URL
                 className="text-muted-foreground hover:text-primary transition-colors"
                 data-testid="link-facebook"
               >
                 <SiFacebook className="h-5 w-5" />
               </a>
               <a 
-                href="#" 
+                href={getDemoPath("/instagram", demoSlug)} // Placeholder, replace with actual URL
                 className="text-muted-foreground hover:text-primary transition-colors"
                 data-testid="link-instagram"
               >
                 <SiInstagram className="h-5 w-5" />
               </a>
               <a 
-                href="#" 
+                href={getDemoPath("/linkedin", demoSlug)} // Placeholder, replace with actual URL
                 className="text-muted-foreground hover:text-primary transition-colors"
                 data-testid="link-linkedin"
               >
@@ -65,17 +105,17 @@ export function Footer({ businessName, logoText, logoUrl, email, phoneNumber }: 
             </h4>
             <ul className="space-y-2">
               <li>
-                <button
-                  onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                <Link
+                  href={getDemoPath("/", demoSlug)}
                   className="text-muted-foreground hover:text-primary transition-colors"
                   data-testid="link-footer-home"
                 >
                   Home
-                </button>
+                </Link>
               </li>
               <li>
                 <button
-                  onClick={() => document.getElementById("diensten")?.scrollIntoView({ behavior: "smooth" })}
+                  onClick={() => scrollToSection("diensten")}
                   className="text-muted-foreground hover:text-primary transition-colors"
                   data-testid="link-footer-diensten"
                 >
@@ -84,7 +124,7 @@ export function Footer({ businessName, logoText, logoUrl, email, phoneNumber }: 
               </li>
               <li>
                 <button
-                  onClick={() => document.getElementById("reviews")?.scrollIntoView({ behavior: "smooth" })}
+                  onClick={() => scrollToSection("reviews")}
                   className="text-muted-foreground hover:text-primary transition-colors"
                   data-testid="link-footer-reviews"
                 >
@@ -93,7 +133,7 @@ export function Footer({ businessName, logoText, logoUrl, email, phoneNumber }: 
               </li>
               <li>
                 <button
-                  onClick={() => document.getElementById("faq")?.scrollIntoView({ behavior: "smooth" })}
+                  onClick={() => scrollToSection("faq")}
                   className="text-muted-foreground hover:text-primary transition-colors"
                   data-testid="link-footer-faq"
                 >
@@ -109,11 +149,46 @@ export function Footer({ businessName, logoText, logoUrl, email, phoneNumber }: 
               Diensten
             </h4>
             <ul className="space-y-2 text-muted-foreground">
-              <li>Dakbedekking</li>
-              <li>Platte Daken</li>
-              <li>Dakreparatie</li>
-              <li>Dakisolatie</li>
-              <li>Dakgoten</li>
+              <li>
+                <Link
+                  href={getDemoPath("/diensten/dakbedekking", demoSlug)}
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  Dakbedekking
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={getDemoPath("/diensten/plat-dak", demoSlug)}
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  Platte Daken
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={getDemoPath("/diensten/dakreparatie", demoSlug)}
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  Dakreparatie
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={getDemoPath("/diensten/dakisolatie", demoSlug)}
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  Dakisolatie
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={getDemoPath("/diensten/dakgoten", demoSlug)}
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  Dakgoten
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -148,13 +223,13 @@ export function Footer({ businessName, logoText, logoUrl, email, phoneNumber }: 
             <p className="text-sm text-muted-foreground">
               © {new Date().getFullYear()} {businessName}. Alle rechten voorbehouden.
             </p>
-            <a 
-              href="/login"
+            <Link
+              href={getDemoPath("/login", demoSlug)}
               className="text-sm text-muted-foreground hover:text-primary transition-colors"
               data-testid="link-admin-login"
             >
               Admin Login
-            </a>
+            </Link>
           </div>
         </div>
       </div>
