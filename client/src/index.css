@@ -245,6 +245,33 @@
     @apply font-sans antialiased bg-background text-foreground;
   }
 
+  header.fixed.top-0.left-0.right-0.z-50.bg-background\/80.border-b.border-border {
+    background: white !important;
+  }
+
+  .max-w-7xl.mx-auto.px-4.md\:px-6.lg\:px-8.py-12.md\:py-16 {
+    background: white !important;
+  }
+  
+  h2.text-3xl.md\:text-4xl.lg\:text-5xl.font-bold.font-poppins.text-foreground {
+    font-size: 26px !important;
+  }
+
+  h2.text-3xl.md\:text-4xl.lg\:text-5xl.font-bold.font-poppins.mb-4.text-foreground {
+    font-size: 23px !important;
+  }
+
+  h3.text-2xl.font-bold.font-poppins.mb-6.text-card-foreground {
+    font-size: 20px !important;
+    text-align: center !important;
+    font-weight: 600 !important;
+  }
+
+  h1.text-5xl.md\:text-6xl.lg\:text-7xl.font-semibold.font-poppins.mb-6.leading-tight {
+    font-size: 35px !important;
+    padding-top: 35px !important;
+  }  
+
   button.fixed.left-0.top-1\/2.-translate-y-1\/2.bg-primary.hover\:bg-primary\/90.text-primary-foreground.px-4.py-6.shadow-2xl.hover\:shadow-xl.transition-all.duration-300.z-40.rounded-r-lg {
     padding: 8px !important;
   }
