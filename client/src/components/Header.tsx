@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
-import { useDemoContext, getDemoPath } from "@/contexts/DemoContext";
+import { useDemoContext, getDemoPath } from "@/DemoContext";
 
 interface HeaderProps {
   businessName: string;
