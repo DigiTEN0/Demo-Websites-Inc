@@ -1,30 +1,26 @@
-import { 
-  type User, 
+import {
+  type User,
   type InsertUser,
   type SiteSettings,
   type InsertSiteSettings,
   type ContactSubmission,
   type InsertContactSubmission,
   type Demo,
-  type InsertDemo
+  type InsertDemo,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
-  // User methods
   getUser(id: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
 
-  // Site settings methods
   getSiteSettings(): Promise<SiteSettings | undefined>;
   updateSiteSettings(settings: InsertSiteSettings): Promise<SiteSettings>;
 
-  // Contact submission methods
   createContactSubmission(submission: InsertContactSubmission): Promise<ContactSubmission>;
   getAllContactSubmissions(): Promise<ContactSubmission[]>;
 
-  // Demo methods
   getAllDemos(): Promise<Demo[]>;
   getDemoBySlug(slug: string): Promise<Demo | undefined>;
   getDemoById(id: string): Promise<Demo | undefined>;
@@ -34,24 +30,17 @@ export interface IStorage {
 }
 
 export class MemStorage implements IStorage {
-  private users: Map<string, User>;
-  private siteSettings: SiteSettings | null;
-  private contactSubmissions: Map<string, ContactSubmission>;
-  private demos: Map<string, Demo>;
+  private users = new Map<string, User>();
+  private siteSettings: SiteSettings | null = null;
+  private contactSubmissions = new Map<string, ContactSubmission>();
+  private demos = new Map<string, Demo>();
 
   constructor() {
-    this.users = new Map();
-    this.siteSettings = null;
-    this.contactSubmissions = new Map();
-    this.demos = new Map();
-
-    // Initialize with default admin user
     this.createUser({
       email: "info@digiten.nl",
       password: "digiten339584!",
     });
 
-    // Initialize with default site settings
     this.updateSiteSettings({
       businessName: "BEDRIJFSNAAM",
       logoText: "BEDRIJFSNAAM",
@@ -65,28 +54,26 @@ export class MemStorage implements IStorage {
     });
   }
 
-  async getUser(id: string): Promise<User | undefined> {
+  async getUser(id: string) {
     return this.users.get(id);
   }
 
-  async getUserByEmail(email: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.email === email,
-    );
+  async getUserByEmail(email: string) {
+    return Array.from(this.users.values()).find((user) => user.email === email);
   }
 
-  async createUser(insertUser: InsertUser): Promise<User> {
+  async createUser(insertUser: InsertUser) {
     const id = randomUUID();
     const user: User = { ...insertUser, id };
     this.users.set(id, user);
     return user;
   }
 
-  async getSiteSettings(): Promise<SiteSettings | undefined> {
+  async getSiteSettings() {
     return this.siteSettings || undefined;
   }
 
-  async updateSiteSettings(settings: InsertSiteSettings): Promise<SiteSettings> {
+  async updateSiteSettings(settings: InsertSiteSettings) {
     const id = this.siteSettings?.id || randomUUID();
     const updatedSettings: SiteSettings = {
       id,
@@ -105,7 +92,7 @@ export class MemStorage implements IStorage {
     return updatedSettings;
   }
 
-  async createContactSubmission(submission: InsertContactSubmission): Promise<ContactSubmission> {
+  async createContactSubmission(submission: InsertContactSubmission) {
     const id = randomUUID();
     const contactSubmission: ContactSubmission = {
       id,
@@ -121,27 +108,23 @@ export class MemStorage implements IStorage {
     return contactSubmission;
   }
 
-  async getAllContactSubmissions(): Promise<ContactSubmission[]> {
+  async getAllContactSubmissions() {
     return Array.from(this.contactSubmissions.values());
   }
 
-  async getAllDemos(): Promise<Demo[]> {
-    return Array.from(this.demos.values()).sort((a, b) => 
-      b.createdAt.getTime() - a.createdAt.getTime()
-    );
+  async getAllDemos() {
+    return Array.from(this.demos.values()).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
 
-  async getDemoBySlug(slug: string): Promise<Demo | undefined> {
-    return Array.from(this.demos.values()).find(
-      (demo) => demo.slug === slug
-    );
+  async getDemoBySlug(slug: string) {
+    return Array.from(this.demos.values()).find((demo) => demo.slug === slug);
   }
 
-  async getDemoById(id: string): Promise<Demo | undefined> {
+  async getDemoById(id: string) {
     return this.demos.get(id);
   }
 
-  async createDemo(insertDemo: InsertDemo): Promise<Demo> {
+  async createDemo(insertDemo: InsertDemo) {
     const id = randomUUID();
     const demo: Demo = {
       id,
@@ -162,11 +145,9 @@ export class MemStorage implements IStorage {
     return demo;
   }
 
-  async updateDemo(id: string, insertDemo: InsertDemo): Promise<Demo> {
+  async updateDemo(id: string, insertDemo: InsertDemo) {
     const existingDemo = this.demos.get(id);
-    if (!existingDemo) {
-      throw new Error("Demo not found");
-    }
+    if (!existingDemo) throw new Error("Demo not found");
 
     const updatedDemo: Demo = {
       ...existingDemo,
@@ -186,10 +167,9 @@ export class MemStorage implements IStorage {
     return updatedDemo;
   }
 
-  async deleteDemo(id: string): Promise<boolean> {
+  async deleteDemo(id: string) {
     return this.demos.delete(id);
   }
 }
 
-import { PgStorage } from './storage.pg';
-export const storage = new PgStorage();
+export const storage = new MemStorage();
