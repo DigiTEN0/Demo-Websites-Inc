@@ -47,21 +47,28 @@ declare module "express-session" {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Session middleware
-  app.use(
+  const sessionStore = new PgStore({
+  conString: process.env.DATABASE_URL,
+  createTableIfMissing: true,
+});
+
+// Log session store errors
+sessionStore.on('error', (error) => {
+  console.error('Session store error:', error);
+});
+
+app.use(
   session({
     secret: process.env.SESSION_SECRET || "development-secret-change-in-production",
     resave: false,
     saveUninitialized: false,
-    store: new PgStore({
-      conString: process.env.DATABASE_URL,
-      createTableIfMissing: true,
-    }),
+    store: sessionStore,
     cookie: {
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    httpOnly: true,
-    secure: false, // Temporarily disable for testing
-    sameSite: 'lax',
-  },
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+    },
   })
 );
 
