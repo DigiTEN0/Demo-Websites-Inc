@@ -247,6 +247,7 @@
 
   .min-h-\[400px\] {
     min-height: 250px !important;
+    height: 250px !important;
   }
 }
 
