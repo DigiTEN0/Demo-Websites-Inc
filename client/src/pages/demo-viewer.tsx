@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "wouter";
+import { DemoProvider } from "@/contexts/DemoContext";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { Services } from "@/components/Services";
@@ -45,47 +46,49 @@ export default function DemoViewer() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header 
-        businessName={demo.businessName}
-        logoText={demo.logoText}
-        logoUrl={demo.logoUrl || undefined}
-        onQuoteClick={() => setIsQuoteFormOpen(true)}
-      />
-      
-      <Hero 
-        businessName={demo.businessName}
-        phoneNumber={demo.phoneNumber || "+31 6 12345678"}
-      />
-      
-      <Services />
-      
-      <USPs businessName={demo.businessName} />
-      
-      <Reviews googleMapsReviewUrl={demo.googleMapsReviewUrl || undefined} />
-      
-      <FAQ />
-      
-      <FinalCTA onQuoteClick={() => setIsQuoteFormOpen(true)} />
-      
-      <Map address={demo.address || "Amsterdam, Nederland"} />
-      
-      <Footer 
-        businessName={demo.businessName}
-        logoText={demo.logoText}
-        logoUrl={demo.logoUrl || undefined}
-        email={demo.email || "info@dakdekker.nl"}
-        phoneNumber={demo.phoneNumber || "+31 6 12345678"}
-      />
-      
-      <WhatsAppButton phoneNumber={demo.whatsappNumber || "31612345678"} />
-      
-      <QuoteFloatingButton onClick={() => setIsQuoteFormOpen(true)} />
-      
-      <QuoteFormSidebar 
-        isOpen={isQuoteFormOpen}
-        onClose={() => setIsQuoteFormOpen(false)}
-      />
-    </div>
+    <DemoProvider slug={slug}>
+      <div className="min-h-screen bg-background">
+        <Header 
+          businessName={demo.businessName}
+          logoText={demo.logoText}
+          logoUrl={demo.logoUrl || undefined}
+          onQuoteClick={() => setIsQuoteFormOpen(true)}
+        />
+        
+        <Hero 
+          businessName={demo.businessName}
+          phoneNumber={demo.phoneNumber || "+31 6 12345678"}
+        />
+        
+        <Services />
+        
+        <USPs businessName={demo.businessName} />
+        
+        <Reviews googleMapsReviewUrl={demo.googleMapsReviewUrl || undefined} />
+        
+        <FAQ />
+        
+        <FinalCTA onQuoteClick={() => setIsQuoteFormOpen(true)} />
+        
+        <Map address={demo.address || "Amsterdam, Nederland"} />
+        
+        <Footer 
+          businessName={demo.businessName}
+          logoText={demo.logoText}
+          logoUrl={demo.logoUrl || undefined}
+          email={demo.email || "info@dakdekker.nl"}
+          phoneNumber={demo.phoneNumber || "+31 6 12345678"}
+        />
+        
+        <WhatsAppButton phoneNumber={demo.whatsappNumber || "31612345678"} />
+        
+        <QuoteFloatingButton onClick={() => setIsQuoteFormOpen(true)} />
+        
+        <QuoteFormSidebar 
+          isOpen={isQuoteFormOpen}
+          onClose={() => setIsQuoteFormOpen(false)}
+        />
+      </div>
+    </DemoProvider>
   );
 }
