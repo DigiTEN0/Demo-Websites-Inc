@@ -14,12 +14,22 @@ export function Header({ businessName, logoText, logoUrl, onQuoteClick }: Header
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { demoSlug } = useDemoContext();
   const menuRef = useRef<HTMLDivElement>(null);
+  const isToggling = useRef(false); // Debounce flag
 
-  // Close menu when clicking outside
+  // Prevent body scrolling when menu is open
+  useEffect(() => {
+    document.body.style.overflow = isMobileMenuOpen ? "hidden" : "auto";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isMobileMenuOpen]);
+
+  // Temporarily disabled click-outside handler to isolate issue
+  /*
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        console.log("Clicked outside, closing menu"); // Debug log
+        console.log("Clicked outside, closing menu");
         setIsMobileMenuOpen(false);
       }
     };
@@ -34,14 +44,7 @@ export function Header({ businessName, logoText, logoUrl, onQuoteClick }: Header
       document.removeEventListener("touchend", handleClickOutside);
     };
   }, [isMobileMenuOpen]);
-
-  // Prevent body scrolling when menu is open
-  useEffect(() => {
-    document.body.style.overflow = isMobileMenuOpen ? "hidden" : "auto";
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [isMobileMenuOpen]);
+  */
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -51,11 +54,16 @@ export function Header({ businessName, logoText, logoUrl, onQuoteClick }: Header
     }
   };
 
-  const toggleMenu = (event: React.MouseEvent | React.TouchEvent) => {
+  const toggleMenu = (event: React.MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
-    console.log("Toggling menu, current state:", isMobileMenuOpen); // Debug log
+    if (isToggling.current) return; // Prevent rapid toggling
+    isToggling.current = true;
+    console.log("Toggling menu, current state:", isMobileMenuOpen, "new state:", !isMobileMenuOpen);
     setIsMobileMenuOpen(!isMobileMenuOpen);
+    setTimeout(() => {
+      isToggling.current = false;
+    }, 100); // Debounce for 100ms
   };
 
   return (
