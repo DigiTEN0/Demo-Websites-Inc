@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Home, Wrench, Shield, Snowflake, Wind, Droplets, ArrowRight } from "lucide-react";
 import { Link } from "wouter";
-import { useDemoContext, getDemoPath } from "@/contexts/DemoContext";
+import { useDemoContext, getDemoPath } from "@/DemoContext";
 import pitchedRoofImage from "@assets/generated_images/Pitched_roof_service_image_cfe08b30.png";
 import flatRoofImage from "@assets/generated_images/Flat_roof_service_image_07e55321.png";
 import repairImage from "@assets/generated_images/Roof_repair_service_image_4e9c21d0.png";
