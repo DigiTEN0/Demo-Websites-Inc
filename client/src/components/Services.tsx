@@ -34,21 +34,21 @@ const services = [
     title: "Dakisolatie",
     description: "Bespaar op energiekosten met professionele dakisolatie. Wij isoleren zowel platte als hellende daken volgens de laatste normen.",
     icon: Snowflake,
-    image: pitchedRoofImage,
+    image: "https://www.isover.be/sites/mac3.isover.be/files/styles/product_gallery/public/2023-09/Plaatsingsfoto%27s%20Hellend%20dak%20-%20%2005.jpg.webp?itok=uWIPM3_d",
   },
   {
     id: "dakgoten",
     title: "Dakgoten & Afvoer",
     description: "Installatie, reparatie en onderhoud van dakgoten en regenwaterafvoersystemen voor een waterdicht resultaat.",
     icon: Droplets,
-    image: flatRoofImage,
+    image: "https://cdn.slimster.nl/upload/cms/18/Dakgoot%20mastgoot%20aluminium.jpg",
   },
   {
     id: "dakonderhoud",
     title: "Dakonderhoud",
     description: "Regelmatig onderhoud verlengt de levensduur van uw dak. Wij verzorgen inspectie, reiniging en klein onderhoud.",
     icon: Wind,
-    image: repairImage,
+    image: "https://fivepointsroofing.com/wp-content/uploads/2022/12/1117-FivePoints-Roof-Cleaning-Image-1200x628-1.png",
   },
 ];
 
@@ -79,6 +79,7 @@ export function Services() {
                   src={service.image}
                   alt={service.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 <div className="absolute bottom-4 left-4">
