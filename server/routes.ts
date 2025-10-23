@@ -57,11 +57,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       createTableIfMissing: true,
     }),
     cookie: {
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: 'lax',
-    },
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    httpOnly: true,
+    secure: false, // Temporarily disable for testing
+    sameSite: 'lax',
+  },
   })
 );
 
