@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "wouter";
+import { DemoProvider } from "@/DemoContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { QuoteFormSidebar } from "@/components/QuoteFormSidebar";
@@ -10,7 +11,7 @@ import { Map } from "@/components/Map";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Check } from "lucide-react";
-import type { SiteSettings } from "@shared/schema";
+import type { SiteSettings, Demo } from "@shared/schema";
 import pitchedRoofImage from "@assets/generated_images/Pitched_roof_service_image_cfe08b30.png";
 import flatRoofImage from "@assets/generated_images/Flat_roof_service_image_07e55321.png";
 import repairImage from "@assets/generated_images/Roof_repair_service_image_4e9c21d0.png";
@@ -146,14 +147,32 @@ const serviceData: Record<string, {
 };
 
 export default function ServiceDetail() {
-  const params = useParams<{ id: string }>();
+  const params = useParams<{ id: string; slug?: string }>();
   const serviceId = params.id || "";
+  const demoSlug = params.slug;
   const service = serviceData[serviceId];
   const [isQuoteFormOpen, setIsQuoteFormOpen] = useState(false);
 
+  // Load demo data if we have a slug
+  const { data: demo } = useQuery<Demo>({
+    queryKey: [`/api/demo/${demoSlug}`],
+    enabled: !!demoSlug,
+  });
+
+  // Load default settings as fallback
   const { data: settings } = useQuery<SiteSettings>({
     queryKey: ["/api/settings"],
+    enabled: !demoSlug,
   });
+
+  // Use demo data if available, otherwise use settings
+  const businessName = demo?.businessName || settings?.businessName || "BEDRIJFSNAAM";
+  const logoText = demo?.logoText || settings?.logoText || "BEDRIJFSNAAM";
+  const logoUrl = demo?.logoUrl || settings?.logoUrl;
+  const phoneNumber = demo?.phoneNumber || settings?.phoneNumber || "+31 6 12345678";
+  const email = demo?.email || settings?.email || "info@dakdekker.nl";
+  const whatsappNumber = demo?.whatsappNumber || settings?.whatsappNumber || "31612345678";
+  const address = demo?.address || settings?.address || "Amsterdam, Nederland";
 
   if (!service) {
     return (
@@ -168,12 +187,12 @@ export default function ServiceDetail() {
     );
   }
 
-  return (
+  const content = (
     <div className="min-h-screen bg-background">
       <Header 
-        businessName={settings?.businessName || "BEDRIJFSNAAM"}
-        logoText={settings?.logoText || "BEDRIJFSNAAM"}
-        logoUrl={settings?.logoUrl}
+        businessName={businessName}
+        logoText={logoText}
+        logoUrl={logoUrl}
         onQuoteClick={() => setIsQuoteFormOpen(true)}
       />
 
@@ -276,19 +295,19 @@ export default function ServiceDetail() {
                   <div>
                     <p className="text-sm font-semibold mb-1">Telefoon</p>
                     <a 
-                      href={`tel:${settings?.phoneNumber || "+31 6 12345678"}`}
+                      href={`tel:${phoneNumber}`}
                       className="text-primary hover:underline"
                     >
-                      {settings?.phoneNumber || "+31 6 12345678"}
+                      {phoneNumber}
                     </a>
                   </div>
                   <div>
                     <p className="text-sm font-semibold mb-1">E-mail</p>
                     <a 
-                      href={`mailto:${settings?.email || "info@dakdekker.nl"}`}
+                      href={`mailto:${email}`}
                       className="text-primary hover:underline text-sm"
                     >
-                      {settings?.email || "info@dakdekker.nl"}
+                      {email}
                     </a>
                   </div>
                 </div>
@@ -298,16 +317,17 @@ export default function ServiceDetail() {
         </div>
       </section>
 
-      <Map address={settings?.address || "Amsterdam, Nederland"} />
+      <Map address={address} />
 
       <Footer 
-        businessName={settings?.businessName || "BEDRIJFSNAAM"}
-        logoText={settings?.logoText || "BEDRIJFSNAAM"}
-        email={settings?.email || "info@dakdekker.nl"}
-        phoneNumber={settings?.phoneNumber || "+31 6 12345678"}
+        businessName={businessName}
+        logoText={logoText}
+        logoUrl={logoUrl}
+        email={email}
+        phoneNumber={phoneNumber}
       />
 
-      <WhatsAppButton phoneNumber={settings?.whatsappNumber || "31612345678"} />
+      <WhatsAppButton phoneNumber={whatsappNumber} />
       <QuoteFloatingButton onClick={() => setIsQuoteFormOpen(true)} />
       
       <QuoteFormSidebar 
@@ -316,4 +336,11 @@ export default function ServiceDetail() {
       />
     </div>
   );
+
+  // Wrap with DemoProvider if we have a demo slug
+  if (demoSlug) {
+    return <DemoProvider slug={demoSlug}>{content}</DemoProvider>;
+  }
+
+  return content;
 }
