@@ -35,7 +35,10 @@ export default function DemoForm() {
     primaryColor: "#0ea5e9",
   });
 
-  // Update form data when demo is fetched
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string>("");
+
+  // Update form data and logo preview when demo is fetched
   useEffect(() => {
     if (demo) {
       setFormData({
@@ -50,8 +53,39 @@ export default function DemoForm() {
         googleMapsReviewUrl: demo.googleMapsReviewUrl || "",
         primaryColor: demo.primaryColor || "#0ea5e9",
       });
+      setLogoPreview(demo.logoUrl || "");
     }
   }, [demo]);
+
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setLogoFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setLogoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const uploadLogoMutation = useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.append("logo", file);
+      
+      const response = await fetch("/api/upload/logo", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to upload logo");
+      }
+
+      return await response.json();
+    },
+  });
 
   const createMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
@@ -114,12 +148,29 @@ export default function DemoForm() {
     },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isEdit) {
-      updateMutation.mutate(formData);
-    } else {
-      createMutation.mutate(formData);
+    
+    try {
+      let updatedFormData = { ...formData };
+      
+      // Upload logo if a new file is selected
+      if (logoFile) {
+        const uploadResult = await uploadLogoMutation.mutateAsync(logoFile);
+        updatedFormData.logoUrl = uploadResult.logoUrl;
+      }
+      
+      if (isEdit) {
+        updateMutation.mutate(updatedFormData);
+      } else {
+        createMutation.mutate(updatedFormData);
+      }
+    } catch (error) {
+      toast({
+        title: "Logo upload mislukt",
+        description: "Probeer het opnieuw met een ander bestand.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -132,7 +183,7 @@ export default function DemoForm() {
     setFormData({ ...formData, slug });
   };
 
-  const isLoading = createMutation.isPending || updateMutation.isPending;
+  const isLoading = createMutation.isPending || updateMutation.isPending || uploadLogoMutation.isPending;
 
   if (isEdit && !demo) {
     return (
@@ -207,6 +258,49 @@ export default function DemoForm() {
                 <p className="text-xs text-gray-500 mt-1">
                   Tekst die in de header wordt weergegeven
                 </p>
+              </div>
+
+              <div>
+                <Label htmlFor="logoFile">Logo Afbeelding (optioneel)</Label>
+                <Input
+                  id="logoFile"
+                  type="file"
+                  accept="image/png,image/jpeg,image/jpg,image/svg+xml,image/webp"
+                  onChange={handleLogoChange}
+                  className="cursor-pointer"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Upload uw logo (PNG, JPG, SVG of WebP, max 5MB). Het logo wordt gebruikt in plaats van de logo tekst.
+                </p>
+                {logoPreview && (
+                  <div className="mt-2 p-4 bg-muted rounded-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-sm font-semibold">Huidige logo:</p>
+                      {formData.logoUrl && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            setLogoFile(null);
+                            setLogoPreview("");
+                            setFormData({ ...formData, logoUrl: "" });
+                          }}
+                        >
+                          Verwijder
+                        </Button>
+                      )}
+                    </div>
+                    <img 
+                      src={logoPreview} 
+                      alt="Logo preview" 
+                      className="h-12 object-contain"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
