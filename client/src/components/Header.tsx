@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import { useDemoContext, getDemoPath } from "@/contexts/DemoContext";
 
 interface HeaderProps {
   businessName: string;
@@ -11,6 +12,7 @@ interface HeaderProps {
 
 export function Header({ businessName, logoText, logoUrl, onQuoteClick }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { demoSlug } = useDemoContext();
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -48,7 +50,7 @@ export function Header({ businessName, logoText, logoUrl, onQuoteClick }: Header
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-6">
             <a
-              href="/"
+              href={getDemoPath("/", demoSlug)}
               className="text-base font-medium text-foreground/80 hover:text-foreground transition-colors"
               data-testid="link-home"
             >
@@ -65,12 +67,12 @@ export function Header({ businessName, logoText, logoUrl, onQuoteClick }: Header
               {/* Dropdown */}
               <div className="absolute left-0 top-full mt-2 w-56 bg-card border border-card-border rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                 <div className="py-2">
-                  <a href="/diensten/dakbedekking" className="block px-4 py-2 text-sm hover-elevate text-card-foreground">Dakbedekking</a>
-                  <a href="/diensten/plat-dak" className="block px-4 py-2 text-sm hover-elevate text-card-foreground">Plat Dak</a>
-                  <a href="/diensten/dakreparatie" className="block px-4 py-2 text-sm hover-elevate text-card-foreground">Dakreparatie</a>
-                  <a href="/diensten/dakisolatie" className="block px-4 py-2 text-sm hover-elevate text-card-foreground">Dakisolatie</a>
-                  <a href="/diensten/dakgoten" className="block px-4 py-2 text-sm hover-elevate text-card-foreground">Dakgoten</a>
-                  <a href="/diensten/dakonderhoud" className="block px-4 py-2 text-sm hover-elevate text-card-foreground">Dakonderhoud</a>
+                  <a href={getDemoPath("/diensten/dakbedekking", demoSlug)} className="block px-4 py-2 text-sm hover-elevate text-card-foreground">Dakbedekking</a>
+                  <a href={getDemoPath("/diensten/plat-dak", demoSlug)} className="block px-4 py-2 text-sm hover-elevate text-card-foreground">Plat Dak</a>
+                  <a href={getDemoPath("/diensten/dakreparatie", demoSlug)} className="block px-4 py-2 text-sm hover-elevate text-card-foreground">Dakreparatie</a>
+                  <a href={getDemoPath("/diensten/dakisolatie", demoSlug)} className="block px-4 py-2 text-sm hover-elevate text-card-foreground">Dakisolatie</a>
+                  <a href={getDemoPath("/diensten/dakgoten", demoSlug)} className="block px-4 py-2 text-sm hover-elevate text-card-foreground">Dakgoten</a>
+                  <a href={getDemoPath("/diensten/dakonderhoud", demoSlug)} className="block px-4 py-2 text-sm hover-elevate text-card-foreground">Dakonderhoud</a>
                 </div>
               </div>
             </div>
@@ -123,7 +125,7 @@ export function Header({ businessName, logoText, logoUrl, onQuoteClick }: Header
         <div className="lg:hidden fixed inset-0 top-16 bg-background z-40 border-t border-border overflow-y-auto">
           <nav className="flex flex-col p-6 gap-4">
             <a
-              href="/"
+              href={getDemoPath("/", demoSlug)}
               onClick={() => setIsMobileMenuOpen(false)}
               className="text-lg font-medium text-foreground py-3 text-left hover-elevate rounded-md px-4"
               data-testid="link-home-mobile"
@@ -132,12 +134,12 @@ export function Header({ businessName, logoText, logoUrl, onQuoteClick }: Header
             </a>
             <div className="border-l-2 border-border pl-4 space-y-2">
               <p className="text-sm font-semibold text-muted-foreground mb-2">Diensten</p>
-              <a href="/diensten/dakbedekking" onClick={() => setIsMobileMenuOpen(false)} className="block text-base py-2 hover-elevate rounded-md px-3">Dakbedekking</a>
-              <a href="/diensten/plat-dak" onClick={() => setIsMobileMenuOpen(false)} className="block text-base py-2 hover-elevate rounded-md px-3">Plat Dak</a>
-              <a href="/diensten/dakreparatie" onClick={() => setIsMobileMenuOpen(false)} className="block text-base py-2 hover-elevate rounded-md px-3">Dakreparatie</a>
-              <a href="/diensten/dakisolatie" onClick={() => setIsMobileMenuOpen(false)} className="block text-base py-2 hover-elevate rounded-md px-3">Dakisolatie</a>
-              <a href="/diensten/dakgoten" onClick={() => setIsMobileMenuOpen(false)} className="block text-base py-2 hover-elevate rounded-md px-3">Dakgoten</a>
-              <a href="/diensten/dakonderhoud" onClick={() => setIsMobileMenuOpen(false)} className="block text-base py-2 hover-elevate rounded-md px-3">Dakonderhoud</a>
+              <a href={getDemoPath("/diensten/dakbedekking", demoSlug)} onClick={() => setIsMobileMenuOpen(false)} className="block text-base py-2 hover-elevate rounded-md px-3">Dakbedekking</a>
+              <a href={getDemoPath("/diensten/plat-dak", demoSlug)} onClick={() => setIsMobileMenuOpen(false)} className="block text-base py-2 hover-elevate rounded-md px-3">Plat Dak</a>
+              <a href={getDemoPath("/diensten/dakreparatie", demoSlug)} onClick={() => setIsMobileMenuOpen(false)} className="block text-base py-2 hover-elevate rounded-md px-3">Dakreparatie</a>
+              <a href={getDemoPath("/diensten/dakisolatie", demoSlug)} onClick={() => setIsMobileMenuOpen(false)} className="block text-base py-2 hover-elevate rounded-md px-3">Dakisolatie</a>
+              <a href={getDemoPath("/diensten/dakgoten", demoSlug)} onClick={() => setIsMobileMenuOpen(false)} className="block text-base py-2 hover-elevate rounded-md px-3">Dakgoten</a>
+              <a href={getDemoPath("/diensten/dakonderhoud", demoSlug)} onClick={() => setIsMobileMenuOpen(false)} className="block text-base py-2 hover-elevate rounded-md px-3">Dakonderhoud</a>
             </div>
             <button
               onClick={() => scrollToSection("reviews")}
