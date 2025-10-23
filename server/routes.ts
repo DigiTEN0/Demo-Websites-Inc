@@ -3,12 +3,12 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertSiteSettingsSchema, insertContactSubmissionSchema, insertDemoSchema } from "@shared/schema";
 import session from "express-session";
-import MemoryStore from "memorystore";
+import connectPgSimple from "connect-pg-simple";
 import multer from "multer";
 import path from "path";
 import { nanoid } from "nanoid";
 
-const SessionStore = MemoryStore(session);
+const PgStore = connectPgSimple(session);
 
 const logoStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -48,20 +48,22 @@ declare module "express-session" {
 export async function registerRoutes(app: Express): Promise<Server> {
   // Session middleware
   app.use(
-    session({
-      secret: process.env.SESSION_SECRET || "development-secret-change-in-production",
-      resave: false,
-      saveUninitialized: false,
-      store: new SessionStore({
-        checkPeriod: 86400000, // prune expired entries every 24h
-      }),
-      cookie: {
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-      },
-    })
-  );
+  session({
+    secret: process.env.SESSION_SECRET || "development-secret-change-in-production",
+    resave: false,
+    saveUninitialized: false,
+    store: new PgStore({
+      conString: process.env.DATABASE_URL,
+      createTableIfMissing: true,
+    }),
+    cookie: {
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: 'lax',
+    },
+  })
+);
 
   // Auth endpoints
   app.post("/api/auth/login", async (req, res) => {
